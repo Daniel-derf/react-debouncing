@@ -1,5 +1,5 @@
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Product = {
   id: number;
@@ -63,11 +63,19 @@ function App() {
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState<string>("");
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const products = await getProducts(search);
+  const searchTimeout = useRef<any>(undefined);
 
-      setProducts(products);
+  useEffect(() => {
+    if (searchTimeout.current) {
+      clearTimeout(searchTimeout.current);
+    }
+
+    const fetchProducts = async () => {
+      searchTimeout.current = setTimeout(async () => {
+        const products = await getProducts(search);
+
+        setProducts(products);
+      }, 1000);
     };
 
     fetchProducts();
