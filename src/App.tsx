@@ -59,7 +59,7 @@ const getProducts = async (search: string = "") => {
   return products;
 };
 
-function App() {
+const useDebouncedGetProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState<string>("");
 
@@ -74,6 +74,12 @@ function App() {
 
     return () => clearTimeout(searchTimeout.current);
   }, [search]);
+
+  return { products, search, setSearch };
+};
+
+function App() {
+  const { products, search, setSearch } = useDebouncedGetProducts();
 
   return (
     <>
