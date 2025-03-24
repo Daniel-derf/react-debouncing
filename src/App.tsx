@@ -66,19 +66,13 @@ function App() {
   const searchTimeout = useRef<any>(undefined);
 
   useEffect(() => {
-    if (searchTimeout.current) {
-      clearTimeout(searchTimeout.current);
-    }
+    searchTimeout.current = setTimeout(async () => {
+      const products = await getProducts(search);
 
-    const fetchProducts = async () => {
-      searchTimeout.current = setTimeout(async () => {
-        const products = await getProducts(search);
+      setProducts(products);
+    }, 1000);
 
-        setProducts(products);
-      }, 1000);
-    };
-
-    fetchProducts();
+    return () => clearTimeout(searchTimeout.current);
   }, [search]);
 
   return (
