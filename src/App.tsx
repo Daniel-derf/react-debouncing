@@ -1,35 +1,90 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import { useEffect, useState } from "react";
+
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+  category: string;
+  image: string;
+};
+
+const getProducts = async (search: string = "") => {
+  const products: Product[] = [
+    {
+      id: 1,
+      name: "Wireless Headphones",
+      price: 99.99,
+      category: "Electronics",
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      id: 2,
+      name: "Gaming Mouse",
+      price: 49.99,
+      category: "Accessories",
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      id: 3,
+      name: "Mechanical Keyboard",
+      price: 129.99,
+      category: "Accessories",
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      id: 4,
+      name: "Smartphone",
+      price: 699.99,
+      category: "Electronics",
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      id: 5,
+      name: "Smartwatch",
+      price: 199.99,
+      category: "Wearables",
+      image: "https://via.placeholder.com/150",
+    },
+  ];
+
+  if (search) {
+    console.log("search");
+
+    const filteredProducts = products.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
+
+    return filteredProducts;
+  }
+
+  return products;
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [products, setProducts] = useState<Product[]>([]);
+  const [search, setSearch] = useState<string>("");
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const products = await getProducts(search);
+
+      setProducts(products);
+    };
+
+    fetchProducts();
+  }, [search]);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      Search: <input value={search} onChange={(e) => setSearch(e.target.value)} type="text" />
+      <br />
+      <h1>PRODUCTS:</h1>
+      {products.map((product) => (
+        <>
+          <h3>{product.name}</h3>
+        </>
+      ))}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
