@@ -87,9 +87,9 @@ function App() {
       <br />
       <h1>PRODUCTS:</h1>
       {products.map((product) => (
-        <>
+        <div key={product.id}>
           <h3>{product.name}</h3>
-        </>
+        </div>
       ))}
     </>
   );
