@@ -62,6 +62,7 @@ const getProducts = async (search: string = "") => {
 const useDebouncedGetProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
 
   const searchTimeout = useRef<any>(undefined);
 
@@ -69,23 +70,25 @@ const useDebouncedGetProducts = () => {
     searchTimeout.current = setTimeout(async () => {
       const products = await getProducts(search);
 
+      setLoading(false);
       setProducts(products);
     }, 1000);
 
     return () => clearTimeout(searchTimeout.current);
   }, [search]);
 
-  return { products, search, setSearch };
+  return { products, search, setSearch, loading };
 };
 
 function App() {
-  const { products, search, setSearch } = useDebouncedGetProducts();
+  const { products, search, setSearch, loading } = useDebouncedGetProducts();
 
   return (
     <>
       Search: <input value={search} onChange={(e) => setSearch(e.target.value)} type="text" />
       <br />
       <h1>PRODUCTS:</h1>
+      {loading && <h2>LOADING...</h2>}
       {products.map((product) => (
         <div key={product.id}>
           <h3>{product.name}</h3>
